@@ -2,8 +2,9 @@ const app = require('express')();
 const http = require('http').Server(app);
 const logger = require('morgan');
 const _ = require('lodash');
-
+const utf8 = require('to-utf-8');
 const Docker = require('dockerode');
+
 const docker = new Docker();
 
 let activeContainers = [];
@@ -37,7 +38,9 @@ app.get('/containers/:id', (req, res) => {
       res.end('noop');
       return;
     }
-    stream.pipe(res);
+    stream
+      .pipe(utf8()) // gets ride of bytecode from docker logs 
+      .pipe(res);
   });
 
 });

@@ -32,7 +32,8 @@ class App extends Component {
       this.state.currentRequest.abort();
       this.setState({ currentRequest: null });
     }
-    this.setState({ selectedContainer: containerId });
+
+    this.setState({ selectedContainer: containerId, content: '' });
     let req = request.get(`${window.location.origin}/containers/${containerId}`)
       .on('data', (data) => {
         this.setState({ content: this.state.content + data.toString() });
@@ -45,6 +46,22 @@ class App extends Component {
     el.scrollTop = el.scrollHeight;
   }
 
+
+  getContainerList = () => {
+    if (this.state.containers.length===0) {
+      return <p className="text-muted">No containers!</p>;
+    }
+
+    return this.state.containers.map((container) => {
+      return (
+        <ListGroupItem active={this.state.selectedContainer===container.Id}
+        onClick={() => this.handleSwitchContainer(container.Id)}>
+        {container.Image}{' / '}{container.Status}{' / '}{container.Id.slice(0, 7)}
+        </ListGroupItem>
+      );
+    });
+  }
+
   render() {
     return (
       <div style={{ marginLeft: 15, marginRight: 15 }}>
@@ -54,16 +71,7 @@ class App extends Component {
             <p className="lead text-center">Containers</p>
             <hr />
             <ListGroup>
-              {
-                this.state.containers.map((container) => {
-                  return (
-                    <ListGroupItem active={this.state.selectedContainer===container.Id}
-                                   onClick={() => this.handleSwitchContainer(container.Id)}>
-                      {container.Image}{' / '}{container.Status}{' / '}{container.Id.slice(0, 7)}
-                    </ListGroupItem>
-                  );
-                })
-              }
+              {this.getContainerList()}
             </ListGroup>
           </Col>
           <Col sm={9}>
