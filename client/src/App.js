@@ -10,6 +10,7 @@ class App extends Component {
     selectedContainer: null,
     content: '',
     containers: [],
+    currentRequest: null,
   }
 
   componentDidMount() {
@@ -27,11 +28,16 @@ class App extends Component {
   }
 
   handleSwitchContainer = (containerId) => {
+    if (this.state.currentRequest) {
+      this.state.currentRequest.abort();
+      this.setState({ currentRequest: null });
+    }
     this.setState({ selectedContainer: containerId });
-    request.get(`${window.location.origin}/containers/${containerId}`)
+    let req = request.get(`${window.location.origin}/containers/${containerId}`)
       .on('data', (data) => {
         this.setState({ content: this.state.content + data.toString() });
       });
+    this.setState({ currentRequest: req });
   }
 
   componentDidUpdate () {

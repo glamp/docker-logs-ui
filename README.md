@@ -1,4 +1,5 @@
 # docker-logs-ui
+![](./screenshot.png)
 
 Front-end
 ```
@@ -12,3 +13,4 @@ Back-end
 yarn
 npm start
 ```
+
